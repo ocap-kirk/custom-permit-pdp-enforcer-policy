@@ -70,8 +70,11 @@ get_rbac_user_authorized_roles(user) := roles {
 	roles := set()
 }
 
+
 _authorized_users[user] := roles {
+	
 	authorized_users := object.keys(authorized_rebac_users) | object.keys(authorized_rbac_users)
+	
 	some user in authorized_users
 	rebac_assignments := get_rebac_user_authorized_roles(user)
 	rbac_assignments := get_rbac_user_authorized_roles(user)
