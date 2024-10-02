@@ -59,6 +59,7 @@ allowing_roles[role_key] {
 	rbac.allowing_roles[role_key] with data.users as scoped_users_obj with data.roles_resource as input.resource.type
 }
 
+
 object_keys(obj) := result {
 	result := [key | some key, value in obj]
 }
