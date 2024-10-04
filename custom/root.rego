@@ -11,6 +11,6 @@ allow {
 } else {
    not "tmp-admin" in rbac.allowing_roles
 } else {
-   time.now_ns() >= time.parse_rfc3339_ns("2024-01-01T00:00:00+02:00")
-   time.now_ns() <= time.parse_rfc3339_ns("2024-01-02T00:00:00+02:00")
+   time.now_ns() >= time.parse_rfc3339_ns("2023-01-01T00:00:00+02:00")
+   time.now_ns() <= time.parse_rfc3339_ns("2024-01-01T00:00:00+02:00")
 }
