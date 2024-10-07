@@ -23,6 +23,7 @@ import future.keywords.in
 import data.permit.policies
 import data.permit.rbac
 
+
 default allow := false
 
 # List of CIDR ranges to check against
@@ -32,6 +33,7 @@ acl_ranges := ["216.41.240.0/24", "532.12.43.5/32"]
 allow {
     not "rbac" in policies.__allow_sources
     print(policies.__allow_sources)
+    trace(sprintf("Contents of data.permit: %v", [data.permit]))
 } else {
    not "check-ip" in rbac.allowing_roles
 } else {
