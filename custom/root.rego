@@ -33,7 +33,6 @@ acl_ranges := ["216.41.240.0/24", "532.12.43.5/32"]
 allow {
     not "rbac" in policies.__allow_sources
     print(policies.__allow_sources)
-    trace(sprintf("Contents of data.permit: %v", [data.permit]))
 } else {
    not "check-ip" in rbac.allowing_roles
 } else {
@@ -47,4 +46,9 @@ ip_in_acl_ranges(ip) {
     some i
     acl_ranges[i]  # Loop through each index of the list
     net.cidr_contains(acl_ranges[i], ip)
+}
+
+# Rule to inspect the contents of `data.permit`
+inspect_data_permit {
+    trace(sprintf("Contents of data.permit: %v", [data.permit]))
 }
