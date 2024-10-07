@@ -35,14 +35,14 @@ allow {
 } else {
    not "check-ip" in rbac.allowing_roles
 } else {
-   ip_in_acl(input.context.ip_addr) #????????
+   ip_in_acl_ranges(input.context.ip_addr) #????????
 
 }
 
 
 # Function to check if the IP is in any of the ACL ranges
-ip_in_acl(ip) {
-    some my_acl_range
-    my_acl_range := acl_ranges[_]
-    net.cidr_contains(my_acl_range, ip)
+ip_in_acl_ranges(ip) {
+    some i
+    acl_ranges[i]  # Loop through each index of the list
+    net.cidr_contains(acl_ranges[i], ip)
 }
