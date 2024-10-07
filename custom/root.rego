@@ -49,6 +49,6 @@ ip_in_acl_ranges(ip) {
 }
 
 # Rule to inspect the contents of `data.permit`
-inspect_data_permit {
-    trace(sprintf("Contents of data.permit: %v", [data.permit]))
+inspect {
+    data.permit
 }
