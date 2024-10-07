@@ -48,7 +48,3 @@ ip_in_acl_ranges(ip) {
     net.cidr_contains(acl_ranges[i], ip)
 }
 
-# Rule to inspect the contents of `data.permit`
-inspect {
-    data.permit
-}
