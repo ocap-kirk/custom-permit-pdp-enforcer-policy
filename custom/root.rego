@@ -19,6 +19,10 @@
 
 package permit.custom
 
+import future.keywords.in
+import data.permit.policies
+import data.permit.rbac
+
 default allow := false
 
 # List of CIDR ranges to check against
