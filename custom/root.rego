@@ -42,7 +42,7 @@ allow {
 
 # Function to check if the IP is in any of the ACL ranges
 ip_in_acl(ip) {
-    some range
-    range := acl_ranges[_]
-    net.cidr_contains(range, ip)
+    some acl_range
+    acl_range := acl_ranges[_]
+    net.cidr_contains(acl_range, ip)
 }
