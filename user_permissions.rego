@@ -74,6 +74,12 @@ _is_filtered_tenant(resource) {
 } else {
 	resource.resource_instance in __input_tenants
 }
+  else {
+	resource.tenant in __input_tenants
+}
+ else {
+	__input_tenants == null
+}
 
 is_filtered_tenant(resource) {
 	is_filtered_resource_type(__tenant_type)
@@ -233,7 +239,10 @@ _rebac_permissions[resource] := build_permissions_object(
 	some resource, roles in rebac_all_roles
 	resource_obj := object.get(data.resource_instances, resource, {})
 	resource_details := split_resource_to_parts(resource)
-	is_filtered_resource(resource_details)
+	updated_resource_details := object.union(resource_details,
+	{"tenant": object.get(resource_obj,"tenant","")})
+	is_filtered_resource(updated_resource_details)
+	_is_filtered_tenant(updated_resource_details)
 	stripped_roles := [stripped_role |
 		role := roles[_]
 		stripped_role := split_resource_role_to_parts(role).role
