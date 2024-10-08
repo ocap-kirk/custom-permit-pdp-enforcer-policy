@@ -1,11 +1,14 @@
-# package permit.custom
+package permit.custom
 
-# import future.keywords.in
-# import data.permit.policies
-# import data.permit.rbac
+import future.keywords.in
+import data.permit.rbac
+import data.roles
+import data.resource_instances
+import data.permit.policies
 
-# default allow := false
+default allow := false
 
+# # Restrict access to `tmp-admin` role within a certain time boundary.
 # allow {
 #     not "rbac" in policies.__allow_sources
 #     print(policies.__allow_sources)
@@ -17,18 +20,16 @@
 # }
 
 
-# package permit.custom
 
-# import future.keywords.in
-# import data.permit.policies
-# import data.permit.rbac
 
-# default allow := false
 
+
+
+
+# # Allow if the context input IP is within a define range of ACLs
 # # List of CIDR ranges to check against
 # acl_ranges := ["216.41.240.0/24", "532.12.43.5/32"]
 
-# # Allow if the context input IP is within any of the ACL ranges
 # allow {
 #     not "rbac" in policies.__allow_sources
 #     print(policies.__allow_sources)
@@ -47,15 +48,14 @@
 #     net.cidr_contains(acl_ranges[i], ip)
 # }
 
-package permit.custom
 
-import future.keywords.in
-import data.permit.rbac
-import data.roles
-import data.resource_instances
 
-default allow := false
 
+
+
+
+
+# iterate over all rbac.user_roles, fetch associated attributes for each role, and compare them with attributes from the resource_instances
 allow {
    # Iterate over all user roles and get attributes for the role
    some role in rbac.allowing_roles
