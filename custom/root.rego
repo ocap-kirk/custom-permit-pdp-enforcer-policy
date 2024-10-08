@@ -58,7 +58,7 @@ default allow := false
 
 allow {
    # Iterate over all user roles and get attributes for the role
-   some role in rbac.user_roles
+   some role in rbac.allowing_roles
    role_attributes_foo := roles[role].attributes.foo  
 
    # Get attributes for the resource instance
