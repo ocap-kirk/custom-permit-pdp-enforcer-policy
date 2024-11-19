@@ -6,6 +6,7 @@ import data.permit.abac_user_permissions
 
 import future.keywords.in
 
+
 user := sprintf("user:%s", [input.user.key])
 
 user_assignments := data.role_assignments[user]
@@ -160,7 +161,9 @@ remove_built_in_roles(roles) := filtered_roles {
 default __rebac_roles := {}
 
 
+
 __rebac_roles := permit_rebac.all_roles(input)
+
 
 
 default permissions := {}
@@ -227,6 +230,7 @@ __rbac_permissions[assigned_object] := build_permissions_object(
 	}
 }
 
+
 _rebac_permissions[resource] := build_permissions_object(
 	"resource",
 	resource_details.resource_type,
@@ -249,6 +253,7 @@ _rebac_permissions[resource] := build_permissions_object(
 	]
 	permissions := roles_permissions(stripped_roles, resource_details)
 }
+
 
 
 _abac_permissions[p] {

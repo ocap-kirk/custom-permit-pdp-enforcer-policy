@@ -3,7 +3,8 @@ package permit.rebac
 import data.permit.rbac
 import future.keywords.in
 
-
+default use_external_data_store := false
+use_external_data_store := input.context.use_external_data_store
 
 default rebac_roles := []
 
@@ -58,7 +59,6 @@ grants[grant] {
 allowing_roles[role_key] {
 	rbac.allowing_roles[role_key] with data.users as scoped_users_obj with data.roles_resource as input.resource.type
 }
-
 
 object_keys(obj) := result {
 	result := [key | some key, value in obj]

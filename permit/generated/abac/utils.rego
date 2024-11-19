@@ -2,6 +2,10 @@ package permit.generated.abac.utils
 
 import future.keywords.in
 
+default use_external_data_store := false
+
+use_external_data_store := input.context.use_external_data_store
+
 # not undefined if object 'x' has a key 'k'
 has_key(x, k) {
 	_ := x[k]
