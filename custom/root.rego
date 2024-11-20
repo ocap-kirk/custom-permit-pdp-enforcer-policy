@@ -58,6 +58,8 @@ default allow := false
 # iterate over all rbac.user_roles, fetch associated attributes for each role, and compare them with attributes from the resource_instances
 allow {
    # Iterate over all user roles and get attributes for the role
+
+#
    some role in rbac.allowing_roles
    role_attributes_foo := roles[role].attributes.foo  
 
