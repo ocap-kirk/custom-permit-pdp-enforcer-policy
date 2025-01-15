@@ -258,23 +258,28 @@ default abac_permissions := {}
 
 
 get_all_abac_permissions(key) := permissions {
-    permissions := [p |
+    permissions := {p |
         some entry in _abac_permissions
         p := entry[key].permissions[_]
-    ]
+	}
 }
 
-_abac_permissions_unique_keys := {key |
+_abac_permissions_unique_keys := {key: tenant |
     some obj in _abac_permissions
         key := object.keys(obj)[_]
+        tenant := obj[key].tenant
 }
 
 
 
 agg_abac_permissions := {result |
-    some key in _abac_permissions_unique_keys
-        permissions := get_all_abac_permissions(key)
-        result := {key: { "permissions": permissions}}
+    some key,tenant in _abac_permissions_unique_keys
+        result := {
+			key: {
+				"permissions": get_all_abac_permissions(key),
+				"tenant": tenant
+			}
+		}
 }
 
 abac_permissions := object.union_n([v | v := agg_abac_permissions[_]])

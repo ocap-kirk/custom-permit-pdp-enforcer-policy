@@ -5,6 +5,41 @@ import data.permit.generated.abac.utils
 
 import future.keywords.in
 
+default use_contextualized_instances := false
+default use_contextualized_role_assignments := false
+
+use_contextualized_instances {
+    input.context.data.resource_instances
+} else {
+    input.context.use_factdb
+}
+
+use_contextualized_role_assignments {
+  input.context.data.role_assignments
+} else {
+  input.context.use_factdb
+}
+
+get_resource_instances_and_tenants(user_key) := result {
+  use_contextualized_instances
+  result := object.union(input.context.data.resource_instances, tenants_match_to_user_roles(user_key))
+} else = result {
+  result := object.union(data.resource_instances, tenants_match_to_user_roles(user_key))
+}
+
+get_tenant_attributes_from_data(tenant) := result {
+  result := data.tenants[tenant].attributes
+} else := result {
+  result := {}
+}
+
+build_tenant_obj(tenant) := result {
+  result := {
+    "key":tenant,
+    "attributes":get_tenant_attributes_from_data(tenant)
+  }
+}
+
 # Return custom input for resource_instance and tenant
 # Args:
 # instance: key of resource_instances_and_tenants can be the key of resource instance or the key of tenant
@@ -17,7 +52,7 @@ custom_input(instance, instance_data, user_key, parts, allowed_type) = result {
     # If it tenant resource
     data.tenants[instance] != null
     result := {
-      "user": {"key": user_key},
+      "user": input.user,
       "resource": {
         "type": allowed_type,
         "tenant": instance
@@ -26,11 +61,12 @@ custom_input(instance, instance_data, user_key, parts, allowed_type) = result {
 } else = result {
 	# If it resource_instnace resource
     result :=  {
-      "user": {"key": user_key},
+      "user": input.user,
       "resource": {
         "type": allowed_type,
         "key": parts[1],
-        "tenant": instance_data.tenant
+        "attributes":object.get(instance_data,"attributes",{}),
+        "tenant": object.get(instance_data,"tenant","default")
       }
     }
 
@@ -71,10 +107,11 @@ tenants_match_to_user_roles(user_key) = {tenant: true |
     parts[0] == "__tenant"
 		tenant := parts[1]
 }
+
 permissions[ps] {
     user_key := input.user.key
 	# create an union set of all the resource instances and a tenants keys that user has a role on them
-    resource_instances_and_tenants := object.union(data.resource_instances, tenants_match_to_user_roles(user_key))
+    resource_instances_and_tenants := get_resource_instances_and_tenants(user_key)
 	# implicit iteration over the resource_types input to check matching resource instnaces
     allowed_type := input.resource_types[_]
 		some instance, instance_data in resource_instances_and_tenants
@@ -87,4 +124,9 @@ permissions[ps] {
       some value in abac.matching_users_and_resources_set with input as _input
 					actions := get_actions(value,_input)
 					permissions := {p | action := actions[_]; p := sprintf("%s:%s", [_input.resource.type, action])}
-					ps := {add_prefix(instance_data, instance): {"permissions": permissions, "userset": value.user, "resourceset": value.resource}}}
+					ps := {add_prefix(instance_data, instance): {
+            "permissions": permissions,
+            "userset": value.user,
+            "resourceset": value.resource,
+            "tenant":build_tenant_obj(_input.resource.tenant)
+          }}}

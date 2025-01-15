@@ -13,6 +13,13 @@ allow {
         is_allowing_pair(value.user, value.resource)
 }
 
+allowing_rules := {
+   {"userset": userset, "resourceset": resourceset} |
+   some val in matching_users_and_resources_set
+    userset := val.user
+    resourceset := val.resource
+}
+
 get_decoded_condition_set_key(key_input) := result {
     some key, value in data.condition_sets
     value.key == key_input
